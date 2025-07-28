@@ -1,173 +1,128 @@
-// readme.md
-# Nexus Copilot
 
-Nexus Copilot is a local-first AI-native application designed to augment your workflow and knowledge management. It combines a powerful local knowledge base, dynamic tool execution, and seamless AI integration to create a truly intelligent assistant that runs on your machine.
 
-## ✨ Features
+### `README.md` (Root Directory - English Version)
 
--   **Local-First Knowledge Base:** Index your local files (Markdown, PDF, DOCX, code, etc.) and perform semantic searches.
--   **AI-Powered Chat:** Engage in conversations with state-of-the-art language models, augmented with your local knowledge or real-time web search results.
--   **Dynamic Tool System:** Create, configure, and execute custom Python scripts or shell commands directly from the UI. Tools can be enhanced with AI pre-processing (natural language to command) and post-processing (raw output to summary).
--   **Intelligent Copilot Window:** A floating, always-on-top window that provides context-aware suggestions based on your clipboard content.
--   **Clipboard History:** A powerful clipboard manager that remembers text and images.
--   **Cross-Platform:** Built with Tauri, running on macOS, Windows, and Linux.
--   **Customizable:** Configure everything from AI models, global shortcuts, to appearance and execution environments.
--   **Backup & Restore:** Easily export and import all your application data.
+<div align="center">
+  <img src="https://raw.githubusercontent.com/zazaji/nexus_copilot/main/src-tauri/icons/128x128@2x.png" alt="Nexus Copilot Logo" width="128">
+  <h1>Nexus Copilot</h1>
+  <p><strong>A Local-First, Intent-Driven AI-Native Desktop Workflow System</strong></p>
+  <p>
+    <a href="https://github.com/zazaji/nexus_copilot/releases"><img src="https://img.shields.io/github/v/release/zazaji/nexus_copilot?display_name=tag&sort=semver" alt="Latest Release"></a>
+    <a href="https://github.com/zazaji/nexus_copilot/blob/main/LICENSE"><img src="https://img.shields.io/github/license/zazaji/nexus_copilot" alt="License"></a>
+    <a href="https://github.com/zazaji/nexus_copilot/actions/workflows/release.yml"><img src="https://github.com/zazaji/nexus_copilot/actions/workflows/release.yml/badge.svg" alt="Build Status"></a>
+  </p>
+</div>
 
-## 🚀 Getting Started & Development
+**Nexus Copilot** is designed to redefine your interaction with AI. It's not just another chat application; it's an intelligent companion deeply integrated into your operating system, seamlessly blending into your daily workflow. Through a smart floating window and a powerful local knowledge base, Nexus brings the full power of AI to your fingertips, wherever you are.
 
-This guide will walk you through setting up the development environment for both the frontend (Tauri + Vue) and the backend (Python FastAPI).
-
-### Prerequisites
-
--   [Rust](https://www.rust-lang.org/tools/install)
--   [Node.js](https://nodejs.org/) (v18+ recommended)
--   [Python](https://www.python.org/downloads/) (v3.9+ recommended)
--   OS-specific dependencies for Tauri (see [Tauri prerequisites](https://tauri.app/v1/guides/getting-started/prerequisites))
-
-### 1. Clone the Repositories
-
-First, clone the main application repository and the backend service repository. It's recommended to place them in the same parent directory.
-
-```bash
-# Clone the main Tauri application
-git clone https://github.com/zazaji/nexus_copilot.git
-cd nexus_copilot
-
-# Clone the FastAPI backend service
-git clone https://github.com/zazaji/nexus_copilot_fastapi.git backend_service
-```
-
-### 2. Frontend Setup (Tauri + Vue)
-
-The frontend is a standard Vue 3 application managed by `npm`.
-
-```bash
-# Navigate to the frontend directory
-cd frontend
-
-# Install dependencies
-npm install
-
-# Run the development server
-npm run dev
-```
-
-This will start the Vue development server. In a separate terminal, run the Tauri application in development mode:
-
-```bash
-# From the root of the nexus_copilot project
-cargo tauri dev
-```
-
-### 3. Backend Setup (Python FastAPI)
-
-The backend provides vector database services and an LLM proxy.
-
-```bash
-# Navigate to the backend service directory
-cd backend_service
-
-# Create and activate a virtual environment (recommended)
-python -m venv venv
-source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Run the backend server
-uvicorn app.main:app --host 127.0.0.1 --port 8008 --reload
-```
-
-Now, both the frontend and backend are running in development mode.
-
-## 📦 Building & Cross-Platform Compilation
-
-Tauri makes cross-compilation straightforward, but it requires setting up the correct toolchains and linkers.
-
-### General Setup
-
-Ensure you have the necessary Rust targets installed. For example, to build for Windows from macOS:
-`rustup target add x86_64-pc-windows-msvc`
-
-### On macOS
-
-#### Building for macOS (Native)
-
-```bash
-cargo tauri build
-```
-
-#### Cross-compiling for Windows (x86_64)
-
-1.  **Install Toolchain:**
-    ```bash
-    rustup target add x86_64-pc-windows-msvc
-    ```
-2.  **Install Linker:** `osxcross` is a popular choice.
-    ```bash
-    brew install osxcross
-    ```
-3.  **Configure Cargo:** Create or edit `~/.cargo/config.toml` and add:
-    ```toml
-    [target.x86_64-pc-windows-msvc]
-    linker = "x86_64-w64-mingw32-gcc"
-    ar = "x86_64-w64-mingw32-ar"
-    ```
-4.  **Build:**
-    ```bash
-    cargo tauri build --target x86_64-pc-windows-msvc
-    ```
-
-#### Cross-compiling for Linux (x86_64 & aarch64)
-
-1.  **Install Toolchains:**
-    ```bash
-    rustup target add x86_64-unknown-linux-gnu
-    rustup target add aarch64-unknown-linux-gnu
-    ```
-2.  **Install Linkers:**
-    ```bash
-    brew install messense/macos-cross-toolchains/x86_64-unknown-linux-gnu
-    brew install messense/macos-cross-toolchains/aarch64-unknown-linux-gnu
-    ```
-3.  **Build for x86_64:**
-    ```bash
-    CC_x86_64_unknown_linux_gnu="x86_64-unknown-linux-gnu-gcc" \
-    CXX_x86_64_unknown_linux_gnu="x86_64-unknown-linux-gnu-g++" \
-    CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER="x86_64-unknown-linux-gnu-gcc" \
-    cargo tauri build --target x86_64-unknown-linux-gnu
-    ```
-4.  **Build for aarch64 (Linux ARM):**
-    ```bash
-    CC_aarch64_unknown_linux_gnu="aarch64-unknown-linux-gnu-gcc" \
-    CXX_aarch64_unknown_linux_gnu="aarch64-unknown-linux-gnu-g++" \
-    CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER="aarch64-unknown-linux-gnu-gcc" \
-    cargo tauri build --target aarch64-unknown-linux-gnu
-    ```
-
-### On Windows
-
-#### Building for Windows (Native)
-
-Ensure you have the "Desktop development with C++" workload installed via the Visual Studio Installer.
-
-```powershell
-cargo tauri build
-```
-
-### On Linux
-
-#### Building for Linux (Native)
-
-Ensure you have the necessary dependencies installed (e.g., `build-essential`, `libwebkit2gtk-4.0-dev`, `librsvg2-dev`).
-
-```bash
-cargo tauri build
-```
+[**Check out the Latest Release**](https://github.com/zazaji/nexus_copilot/releases)
 
 ---
 
-## 📜 License
+## Core Features
+
+
+
+#### 🤖 **Intent-Driven Copilot Window**
+-   **System-Level Context Awareness**: Automatically captures your clipboard content (text, images, files) and understands your potential intent.
+-   **Dynamic Action Suggestions**: No typing needed. Copilot intelligently suggests one-click actions like "Translate," "Explain Code," or "Summarize Content" based on the context.
+-   **Global Shortcut**: Use `Cmd/Ctrl+Shift+C` to summon the Copilot instantly from any application. It automatically hides when you're done, never interrupting your flow.
+-   **Powerful Clipboard History**: Your "digital memory" with full-text search, pinning, and one-click paste capabilities.
+
+#### 🧠 **Agentic AI Task Automation**
+-   **Multi-Mode Agent Engine**: Go beyond simple Q&A. Issue complex goals with commands like `/plan`, `/explore`, `/write`, `/research`, or `/debate`, and the AI Agent will autonomously plan and execute multi-step tasks.
+-   **Transparent "Chain of Thought"**: Watch the Agent's every thought, action, and decision in real-time. No more black boxes.
+-   **Long-Form Content Generation**: Specialized `write` and `research` modes are optimized for creating structured, coherent long-form articles and reports.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/zazaji/nexus_copilot/main/docs/knowledge-base-demo.png" alt="Nexus Knowledge Base" width="700">
+  <br>
+  <em>Build a "second brain" that's truly yours, powered by AI.</em>
+</p>
+
+#### 📚 **Local-First Hybrid Knowledge Base**
+-   **Your Data, Your Control**: All your notes, files, and indexes are stored securely on your local device, enabling full offline access.
+-   **Hybrid Indexing**: Combines **metadata indexing (SQLite)** for precise lookups with **semantic vector indexing (ChromaDB)** for fuzzy, meaning-based exploration.
+-   **AI-Powered Semantic Search**: Ask questions in natural language and find the most relevant information across all your documents (PDF, DOCX, MD...).
+-   **Dynamic Knowledge Graph**: Use `[[WikiLinks]]` to connect your ideas into a network, and explore these connections visually in an interactive 3D graph.
+-   **Retrieval-Augmented Generation (RAG)**: Enable your AI chat models to cite and summarize content directly from your personal knowledge base, providing highly accurate and personalized answers.
+
+#### 🛠️ **High Performance & Extensibility**
+-   **Lightweight & Efficient**: Built with **Tauri** and **Rust**, ensuring minimal memory and CPU usage, along with lightning-fast startup times.
+-   **Cross-Platform**: Runs beautifully on Windows, macOS, and Linux.
+-   **Flexible API Configuration**: Supports connecting to any OpenAI-compatible model service, including locally hosted models.
+
+## Why Nexus Copilot?
+
+| Feature | Nexus Copilot | Traditional Web AI Tools (ChatGPT, Claude) | Other Local AI Apps |
+| :--- | :---: | :---: | :---: |
+| **System-Level Integration** | ✅ **Yes** (Global shortcut, clipboard monitor) | ❌ No (Requires browser/app switching) | ⚠️ Limited |
+| **Local-First & Offline** | ✅ **Yes** | ❌ No | ✅ Yes |
+| **Agentic Task Automation** | ✅ **Yes** (Multi-mode Agents) | ⚠️ Limited (Via plugins only) | ❌ No |
+| **Hybrid Knowledge Base (Semantic + Graph)** | ✅ **Yes** | ❌ No | ⚠️ Limited (Usually semantic only) |
+| **Performance & Resource Usage** | 🟢 **Excellent** (Rust core) | 🟡 Medium (Browser-based) | 🟡 Medium (Often Electron-based) |
+
+## Getting Started
+
+1.  **Download**: Go to the [**Releases**](https://github.com/zazaji/nexus_copilot/releases) page and download the latest version for your operating system.
+2.  **Install**:
+    -   **Windows**: Run the `.msi` installer.
+    -   **macOS**: Open the `.dmg` file and drag `NexusCopilot.app` to your "Applications" folder.
+    -   **Linux**: Use the `.deb` or `.AppImage` file.
+3.  **Initial Setup**:
+    -   On first launch, navigate to **Settings -> API & Models**.
+    -   Add your API Provider details (e.g., OpenAI API key and Base URL).
+    -   In the **Model Assignments** section, select the models you just configured for features like "Chat," "Suggestion," etc.
+    -   You're all set! Start using Nexus via the system tray icon or the global shortcut.
+
+## Development Setup
+
+Interested in contributing to the project? That's awesome!
+
+#### **Prerequisites**
+-   [Node.js](https://nodejs.org/) v20+
+-   [Rust](https://www.rust-lang.org/tools/install) & Cargo
+-   [Python](https://www.python.org/downloads/) 3.10+
+
+#### **Installation & Running**
+1.  **Clone the repository**:
+    ```bash
+    git clone https://github.com/zazaji/nexus_copilot.git
+    cd nexus_copilot
+    ```
+
+2.  **Install frontend dependencies**:
+    ```bash
+    npm install
+    ```
+
+3.  **Install backend dependencies**:
+    ```bash
+    cd backend
+    python -m venv venv
+    # Activate virtual environment (macOS/Linux)
+    source venv/bin/activate
+    # Activate virtual environment (Windows)
+    # venv\Scripts\activate
+    pip install -r requirements.txt
+    cd ..
+    ```
+
+4.  **Run the development environment**:
+    This will start the Vite frontend dev server, the Tauri desktop app, and the FastAPI backend service concurrently.
+    ```bash
+    npm run tauri dev
+    ```
+
+## Architecture Overview
+
+Nexus Copilot uses a local three-tier architecture to achieve the best balance of performance, functionality, and security:
+1.  **Frontend (Vue 3 + TypeScript)**: Renders the user interface and manages UI state.
+2.  **Tauri Core (Rust)**: Acts as the bridge between the frontend and the OS, handling high-performance, low-latency tasks like window management, global shortcuts, filesystem I/O, and the SQLite database.
+3.  **AI Backend (FastAPI + Python)**: Runs as a separate local service, responsible for all compute-intensive tasks, including LLM API proxying, Agent logic execution, vector database management, and RAG processing.
+
+
+
+## License
 
 This project is licensed under the [MIT License](LICENSE).

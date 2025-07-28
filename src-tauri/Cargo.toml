@@ -1,8 +1,8 @@
 # src-tauri/Cargo.toml
 [package]
-name = "nexus"
-version = "0.3.11"
-description = "A Tauri App"
+name = "nexus_copilot"
+version = "0.3.15"
+description = "Nexus Copilot, A AI Knowledge App."
 authors = ["you"]
 license = ""
 repository = ""
