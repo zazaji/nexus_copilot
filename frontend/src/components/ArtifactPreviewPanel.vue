@@ -19,6 +19,14 @@
       <div class="flex items-center space-x-1 pl-2">
         <n-tooltip trigger="hover">
           <template #trigger>
+            <button @click="handleSaveToKb" class="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">
+              <Save class="w-4 h-4" />
+            </button>
+          </template>
+          Save to Knowledge Base
+        </n-tooltip>
+        <n-tooltip trigger="hover">
+          <template #trigger>
             <button @click="copyContent" class="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">
               <Copy class="w-4 h-4" />
             </button>
@@ -63,7 +71,6 @@
                 :step-node="step"
                 :task-steps="task.steps"
                 :task-content="task.researchContent"
-                :prefix="`${index + 1}`"
               />
             </div>
             <DebateArtifactDetail v-else-if="task.mode === 'debate'" :task="task" />
@@ -79,14 +86,17 @@
 import { computed, PropType, ref, watch } from 'vue';
 import type { AgentTask, researchOutlineNode } from '../types';
 import { parseMarkdown } from '../utils/markdownParser';
-import { Loader2, PanelRightClose, Copy } from 'lucide-vue-next';
+import { Loader2, PanelRightClose, Copy, Save } from 'lucide-vue-next';
 import { useUiStore } from '../stores/ui';
+import { useSettingsStore } from '../stores/settings';
+import { useKnowledgeExplorerStore } from '../stores/knowledgeExplorer';
 import { useToasts } from '../composables/useToasts';
 import { NTooltip, NTabs, NTab } from 'naive-ui';
 import ArtifactDetailNode from './ArtifactDetailNode.vue';
 import DebateArtifactDetail from './DebateArtifactDetail.vue';
 import ExploreArtifactDetail from './ExploreArtifactDetail.vue';
 import WriteModeStep from './WriteModeStep.vue';
+import { saveNoteToKb } from '../lib/api';
 
 const props = defineProps({
   task: {
@@ -96,6 +106,8 @@ const props = defineProps({
 });
 
 const uiStore = useUiStore();
+const settingsStore = useSettingsStore();
+const explorerStore = useKnowledgeExplorerStore();
 const { success, error } = useToasts();
 const activeTab = ref('details');
 
@@ -180,14 +192,18 @@ const renderedReport = computed(() => {
   return parseMarkdown(reportContent.value);
 });
 
-const copyContent = async () => {
-  let contentToCopy = '';
+const getContentToSave = () => {
+  let contentToSave = '';
   if (activeTab.value === 'report' || !showDetailsTab.value) {
-    contentToCopy = reportContent.value;
+    contentToSave = reportContent.value;
   } else if (activeTab.value === 'details') {
-    contentToCopy = detailsContent.value;
+    contentToSave = detailsContent.value;
   }
+  return contentToSave;
+};
 
+const copyContent = async () => {
+  const contentToCopy = getContentToSave();
   if (!contentToCopy) {
     error('No content to copy.');
     return;
@@ -198,6 +214,29 @@ const copyContent = async () => {
   } catch (err) {
     console.error('Failed to copy content:', err);
     error('Failed to copy content.');
+  }
+};
+
+const handleSaveToKb = async () => {
+  const content = getContentToSave();
+  if (!content || !props.task) {
+    error('No content to save.');
+    return;
+  }
+
+  const saveDir = settingsStore.settings?.knowledgeBase.defaultSaveDirectory;
+  if (!saveDir) {
+    error('No default knowledge base directory set in Settings.');
+    return;
+  }
+
+  const baseFilename = props.task.userGoal.substring(0, 16).replace(/[<>:"/\\|?*]/g, '').trim() + '.md';
+  
+  const finalPath = await saveNoteToKb(saveDir, baseFilename, content);
+  if (finalPath) {
+    const finalFilename = finalPath.split(/[/\\]/).pop();
+    success(`Report saved to knowledge base as "${finalFilename}"`);
+    explorerStore.loadFileTree(); // Refresh the file tree
   }
 };
 </script>

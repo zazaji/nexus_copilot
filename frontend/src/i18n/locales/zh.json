@@ -1,0 +1,210 @@
+{
+  "common": {
+    "none": "无",
+    "save": "保存",
+    "cancel": "取消"
+  },
+  "sidebar": {
+    "nexus": "Nexus",
+    "chats": "对话",
+    "tools": "工具",
+    "dashboard": "仪表盘",
+    "knowledgeBase": "知识库",
+    "toolsLink": "工具",
+    "clipboard": "剪贴板",
+    "userSettings": "用户设置",
+    "offline": "离线"
+  },
+  "chat": {
+    "inputPlaceholder": "随便问点什么..."
+  },
+  "creation": {
+    "inputPlaceholder": "描述您想创作的内容..."
+  },
+  "knowledge": {
+    "title": "知识库",
+    "explorer": "浏览器",
+    "graph": "关系图",
+    "searchPlaceholder": "搜索...",
+    "noResults": "未找到结果。",
+    "openFolder": "在系统文件浏览器中打开",
+    "newNote": "新建笔记",
+    "deleteFile": "删除文件",
+    "editor": {
+      "emptyTitle": "选择一个文件",
+      "emptyDesc": "从浏览器中选择一个文件以查看或编辑其内容。",
+      "preview": "预览",
+      "edit": "编辑",
+      "save": "保存",
+      "saveSuccess": "成功保存 '{title}'。"
+    },
+    "graphTitle": "知识图谱",
+    "graphDesc": "可视化您的笔记之间的连接。",
+    "graphEmpty": "没有可显示的笔记或链接。开始写作并通过 [[Wiki链接]] 来构建您的图谱吧。"
+  },
+  "settings": {
+    "title": "设置",
+    "tabs": {
+      "general": "通用",
+      "apiKeys": "API与模型",
+      "knowledgeBase": "知识库",
+      "scriptsAndTools": "动作与集成",
+      "execution": "执行环境",
+      "converter": "转换器",
+      "backupRestore": "备份与恢复",
+      "about": "关于"
+    },
+    "general": {
+      "title": "通用",
+      "description": "配置通用应用程序设置。",
+      "language": "语言",
+      "theme": "主题",
+      "themes": {
+        "light": "浅色",
+        "dark": "深色",
+        "system": "跟随系统"
+      },
+      "copilotDelay": "Copilot 自动隐藏延迟（秒）",
+      "autostart": "系统启动时运行 Nexus",
+      "shortcutsTitle": "全局快捷键",
+      "shortcutsDesc": "这些快捷键在应用未获取焦点时也有效。",
+      "toggleCopilot": "切换 Copilot 窗口",
+      "showMain": "显示主窗口",
+      "shortcutPlaceholder": "点击并按下组合键",
+      "save": "保存通用设置",
+      "saveSuccess": "通用设置已保存！"
+    },
+    "apiKeys": {
+      "title": "API与模型",
+      "description": "管理API提供商并将模型分配给不同的任务。",
+      "modelAssignmentsTitle": "默认模型分配",
+      "assignments": "模型分配",
+      "assignments_chat": "默认聊天",
+      "assignments_suggestion": "建议",
+      "assignments_embedding": "嵌入",
+      "assignments_vision": "视觉",
+      "assignments_imageGen": "图像生成",
+      "assignments_videoGen": "视频生成",
+      "assignments_tts": "语音合成",
+      "assignments_plan": "计划任务",
+      "assignments_debatePro": "辩论（正方）",
+      "assignments_debateCon": "辩论（反方）",
+      "assignments_debateJudge": "辩论（裁判）",
+      "assignments_write": "写作任务",
+      "assignments_refine": "润色任务",
+      "externalServices": "外部服务 API 密钥",
+      "tavilyKey": "Tavily 搜索 API 密钥",
+      "save": "保存设置",
+      "saveSuccess": "API 设置已成功保存。",
+      "providers": "API 提供商",
+      "addProvider": "添加提供商",
+      "noProviders": "尚未配置 API 提供商。请添加一个以开始使用。"
+    },
+    "knowledge": {
+      "title": "知识库",
+      "description": "管理 Nexus 将索引和学习的目录。",
+      "addFolder": "添加文件夹",
+      "clearAll": "清除并重建所有",
+      "noFolders": "知识库中尚未添加任何文件夹。",
+      "rebuildIndex": "重建索引",
+      "removeDirectory": "移除目录",
+      "save": "保存并重新索引",
+      "saveSuccess": "知识库设置已保存。"
+    },
+    "scripts": {
+      "title": "动作与集成",
+      "description": "配置自定义动作、脚本以及与外部服务的集成。",
+      "scriptDirs": "脚本目录",
+      "scriptDirsDesc": "Nexus 将在这些文件夹中发现可执行脚本作为工具使用。",
+      "addFolder": "添加文件夹",
+      "noFolders": "未配置脚本目录。",
+      "save": "保存目录",
+      "saveSuccess": "脚本目录已更新。"
+    },
+    "execution": {
+      "title": "执行环境",
+      "description": "配置 Nexus 如何及在何处执行代码和运行其后端。",
+      "pythonConfig": "代码执行",
+      "pythonPath": "Python 解释器路径",
+      "pythonPathDesc": "留空以使用系统 PATH 中的 'python'。",
+      "workingDir": "工作目录",
+      "workingDirDesc": "脚本将在此默认目录中执行。",
+      "backendManagement": "后端服务管理",
+      "backendUrl": "后端 URL",
+      "status": "状态：",
+      "installBackend": "安装后端",
+      "startBackend": "启动后端",
+      "stopBackend": "停止后端",
+      "autoStart": "应用启动时自动启动后端",
+      "save": "保存执行设置",
+      "saveSuccess": "执行设置已保存。"
+    },
+    "backup": {
+      "title": "备份与恢复",
+      "description": "导出所有数据以进行备份，或导入数据以进行恢复。",
+      "exportTitle": "导出数据",
+      "exportDesc": "这将创建一个包含您所有对话、设置和知识库索引的 JSON 文件。",
+      "exportBtn": "导出所有数据",
+      "exportSuccess": "数据导出成功！",
+      "exportError": "导出数据失败。",
+      "restoreTitle": "从备份恢复",
+      "restoreDesc": "这将使用备份文件中的数据覆盖应用程序中的所有当前数据。此操作无法撤销。",
+      "restoreBtn": "从文件恢复",
+      "restoreSuccess": "数据恢复成功！请重启应用程序。",
+      "restoreError": "恢复数据失败。",
+      "confirmRestore": "您确定要从此备份恢复吗？所有当前数据将被永久覆盖。"
+    },
+    "integrations": {
+      "title": "集成",
+      "description": "将 Nexus 连接到外部服务和应用程序。",
+      "configured": "已配置的集成",
+      "add": "添加集成",
+      "noIntegrations": "尚未配置任何集成。"
+    }
+  },
+  "tools": {
+    "title": "工具",
+    "loading": "正在加载工具...",
+    "notFound": "未找到与您的搜索匹配的工具。",
+    "run": "运行",
+    "output": "输出",
+    "dynamic": "动态",
+    "configured": "已配置",
+    "saveSuccess": "工具 '{name}' 已成功保存。",
+    "deleteSuccess": "工具已成功删除。"
+  },
+  "clipboard": {
+    "title": "剪贴板历史",
+    "deletePage": "删除本页",
+    "clearAll": "清除全部（保留已固定）",
+    "empty": "剪贴板历史为空",
+    "emptyDesc": "您复制的内容将显示在此处。",
+    "page": "第 {currentPage} 页 / 共 {totalPages} 页",
+    "previous": "上一页",
+    "next": "下一页"
+  },
+  "dashboard": {
+    "title": "仪表盘",
+    "stats": {
+      "notes": "笔记",
+      "vectors": "向量",
+      "conversations": "对话",
+      "tools": "工具"
+    },
+    "storage": {
+      "database": "应用数据库大小",
+      "vector": "向量存储大小",
+      "statusNormal": "正常",
+      "statusWarning": "高",
+      "statusCritical": "严重",
+      "warningText": "使用率较高，请考虑清理。",
+      "criticalText": "使用率严重，请清理数据。",
+      "actionLink": "管理数据"
+    }
+  },
+  "copilot": {
+    "suggestions": "建议",
+    "result": "结果",
+    "executeWith": "使用...执行"
+  }
+}

@@ -5,33 +5,30 @@
     <p class="text-sm text-gray-500 mt-1">{{ $t('settings.apiKeys.description') }}</p>
     
     <div v-if="editableSettings.apiConfig && editableSettings.knowledgeBase" class="mt-6 space-y-8">
-      <!-- Basic Configuration -->
+      <!-- Model Assignments -->
       <div>
-        <h3 class="font-semibold text-base mb-4">Basic Configuration</h3>
+        <h3 class="font-semibold text-base mb-4">{{ $t('settings.apiKeys.modelAssignmentsTitle') }}</h3>
         <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-            <!-- Model Assignments -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+            <!-- General & Agent Assignments -->
             <div class="space-y-4">
-              <h4 class="font-medium text-sm">{{ $t('settings.apiKeys.assignments') }}</h4>
-              <div v-for="assignment in modelAssignments" :key="assignment.key" class="grid grid-cols-3 items-center gap-4">
-                <label :for="`assignment-${assignment.key}`" class="block text-sm font-medium col-span-1">{{ $t(assignment.label) }}</label>
-                <select :id="`assignment-${assignment.key}`" v-model="assignment.model.value" class="mt-1 block w-full col-span-2 input-style">
+              <div v-for="assignment in mainAssignments" :key="assignment.key" class="grid grid-cols-2 items-center gap-4">
+                <label :for="`assignment-${assignment.key}`" class="block text-sm font-medium">{{ $t(assignment.label) }}</label>
+                <select :id="`assignment-${assignment.key}`" v-model="assignment.model.value" class="mt-1 block w-full input-style">
                   <option :value="null">{{ $t('common.none') }}</option>
                   <option v-for="opt in getModelOptionsFor(assignment.capability)" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
                 </select>
               </div>
             </div>
 
-            <!-- External Services API Keys -->
+            <!-- Creation & Other Assignments -->
             <div class="space-y-4">
-              <h4 class="font-medium text-sm">{{ $t('settings.apiKeys.externalServices') }}</h4>
-              <div>
-                <label for="tavily-key" class="block text-sm font-medium">{{ $t('settings.apiKeys.tavilyKey') }}</label>
-                <input type="password" id="tavily-key" v-model="editableSettings.apiConfig.keys.tavily" class="mt-1 block w-full input-style" />
-              </div>
-              <div>
-                <label for="bing-key" class="block text-sm font-medium">Bing Search API Key</label>
-                <input type="password" id="bing-key" v-model="editableSettings.apiConfig.keys.bing" class="mt-1 block w-full input-style" />
+               <div v-for="assignment in otherAssignments" :key="assignment.key" class="grid grid-cols-2 items-center gap-4">
+                <label :for="`assignment-${assignment.key}`" class="block text-sm font-medium">{{ $t(assignment.label) }}</label>
+                <select :id="`assignment-${assignment.key}`" v-model="assignment.model.value" class="mt-1 block w-full input-style">
+                  <option :value="null">{{ $t('common.none') }}</option>
+                  <option v-for="opt in getModelOptionsFor(assignment.capability)" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+                </select>
               </div>
             </div>
           </div>
@@ -85,7 +82,7 @@ import type { Settings, ApiProvider, ModelEndpoint, ModelCapability } from '../.
 import ApiProviderConfig from './ApiProviderConfig.vue';
 import { Pencil, Trash2 } from 'lucide-vue-next';
 
-type AssignmentKey = 'chat' | 'suggestion' | 'vision' | 'imageGen' | 'embedding' | 'tts' | 'videoGen';
+type AssignmentKey = keyof Settings['apiConfig']['assignments'];
 
 const { t } = useI18n();
 const settingsStore = useSettingsStore();
@@ -127,29 +124,35 @@ const parseIdentifier = (identifier: string | null): ModelEndpoint | null => {
   return { providerId, modelName };
 };
 
-const modelAssignments = computed(() => {
-  const assignments: { key: AssignmentKey, label: string, capability: ModelCapability }[] = [
-    { key: 'chat', label: 'settings.apiKeys.assignments_chat', capability: 'chat' },
-    { key: 'suggestion', label: 'settings.apiKeys.assignments_suggestion', capability: 'chat' },
-    { key: 'embedding', label: 'settings.apiKeys.assignments_embedding', capability: 'embedding' },
-    { key: 'vision', label: 'settings.apiKeys.assignments_vision', capability: 'vision' },
-    { key: 'imageGen', label: 'settings.apiKeys.assignments_imageGen', capability: 'image_gen' },
-    { key: 'videoGen', label: 'settings.apiKeys.assignments_videoGen', capability: 'video_gen' },
-    { key: 'tts', label: 'settings.apiKeys.assignments_tts', capability: 'tts' },
-  ];
-
-  return assignments.map(a => ({
-    ...a,
-    model: computed({
-      get: () => createIdentifier(editableSettings.apiConfig?.assignments[a.key as AssignmentKey]),
-      set: (value) => {
-        if (editableSettings.apiConfig) {
-          editableSettings.apiConfig.assignments[a.key as AssignmentKey] = parseIdentifier(value);
-        }
+const createAssignmentComputed = (key: AssignmentKey) => {
+  return computed({
+    get: () => createIdentifier(editableSettings.apiConfig?.assignments[key]),
+    set: (value) => {
+      if (editableSettings.apiConfig) {
+        editableSettings.apiConfig.assignments[key] = parseIdentifier(value);
       }
-    })
-  }));
-});
+    }
+  });
+};
+
+const mainAssignments = [
+  { key: 'chat', label: 'settings.apiKeys.assignments_chat', capability: 'chat', model: createAssignmentComputed('chat') },
+  { key: 'suggestion', label: 'settings.apiKeys.assignments_suggestion', capability: 'chat', model: createAssignmentComputed('suggestion') },
+  { key: 'vision', label: 'settings.apiKeys.assignments_vision', capability: 'vision', model: createAssignmentComputed('vision') },
+  { key: 'embedding', label: 'settings.apiKeys.assignments_embedding', capability: 'embedding', model: createAssignmentComputed('embedding') },
+  { key: 'plan', label: 'settings.apiKeys.assignments_plan', capability: 'chat', model: createAssignmentComputed('plan') },
+  { key: 'write', label: 'settings.apiKeys.assignments_write', capability: 'chat', model: createAssignmentComputed('write') },
+  { key: 'refine', label: 'settings.apiKeys.assignments_refine', capability: 'chat', model: createAssignmentComputed('refine') },
+];
+
+const otherAssignments = [
+  { key: 'imageGen', label: 'settings.apiKeys.assignments_imageGen', capability: 'image_gen', model: createAssignmentComputed('imageGen') },
+  { key: 'videoGen', label: 'settings.apiKeys.assignments_videoGen', capability: 'video_gen', model: createAssignmentComputed('videoGen') },
+  { key: 'tts', label: 'settings.apiKeys.assignments_tts', capability: 'tts', model: createAssignmentComputed('tts') },
+  { key: 'debatePro', label: 'settings.apiKeys.assignments_debatePro', capability: 'chat', model: createAssignmentComputed('debatePro') },
+  { key: 'debateCon', label: 'settings.apiKeys.assignments_debateCon', capability: 'chat', model: createAssignmentComputed('debateCon') },
+  { key: 'debateJudge', label: 'settings.apiKeys.assignments_debateJudge', capability: 'chat', model: createAssignmentComputed('debateJudge') },
+];
 
 const openProviderModal = (provider: ApiProvider | null) => {
   editingProvider.value = provider;
@@ -166,7 +169,6 @@ const saveBasicSettings = () => {
   if (settingsStore.settings && editableSettings.apiConfig) {
     const newSettings = JSON.parse(JSON.stringify(settingsStore.settings)) as Settings;
     
-    // Apply changes from the editable state
     newSettings.apiConfig.assignments = editableSettings.apiConfig.assignments;
     newSettings.apiConfig.keys = editableSettings.apiConfig.keys;
 

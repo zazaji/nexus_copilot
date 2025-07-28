@@ -17,7 +17,6 @@ package-lock.json
 *.log
 logs
 *.log.*
-
 # Environment variables - IMPORTANT for security
 .env
 .env.*

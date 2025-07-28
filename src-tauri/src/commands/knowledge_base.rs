@@ -10,12 +10,12 @@ use tauri::{AppHandle, Manager, State};
 use walkdir::WalkDir;
 
 #[derive(Debug, Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct FileNode {
     key: String,
     title: String,
     is_leaf: bool,
     children: Option<Vec<FileNode>>,
-    #[serde(rename = "fileType")]
     file_type: Option<String>,
 }
 
@@ -56,43 +56,57 @@ pub async fn find_file_in_kb(state: State<'_, AppState>, query: String) -> Resul
 
 #[tauri::command]
 pub async fn list_files_in_directory(path: String) -> Result<Vec<FileNode>> {
-    let mut entries = Vec::new();
-    for entry in WalkDir::new(path).min_depth(1).max_depth(1).into_iter().filter_map(|e| e.ok()) {
-        let path = entry.path();
-        let mut file_type = None;
+    fn build_tree(dir: &Path) -> Result<Vec<FileNode>> {
+        let mut entries = Vec::new();
+        if let Ok(read_dir) = fs::read_dir(dir) {
+            for entry in read_dir.filter_map(|e| e.ok()) {
+                let path = entry.path();
+                let title = path.file_name().unwrap_or_default().to_string_lossy().to_string();
+                let key = path.to_string_lossy().to_string();
 
-        if path.is_file() {
-            let extension = path.extension().and_then(|s| s.to_str()).unwrap_or("");
-            match extension.to_lowercase().as_str() {
-                "md" | "txt" | "rs" | "py" | "html" | "css" | "json" | "toml" => {
-                    file_type = Some("text".to_string());
+                if path.is_dir() {
+                    let children = build_tree(&path)?;
+                    entries.push(FileNode {
+                        key,
+                        title,
+                        is_leaf: false,
+                        children: Some(children),
+                        file_type: None,
+                    });
+                } else if path.is_file() {
+                    let extension = path.extension().and_then(|s| s.to_str()).unwrap_or("");
+                    let file_type = match extension.to_lowercase().as_str() {
+                        "md" | "txt" | "rs" | "py" | "html" | "css" | "json" | "toml" => Some("text".to_string()),
+                        "pdf" => Some("pdf".to_string()),
+                        "doc" | "docx" => Some("doc".to_string()),
+                        "ppt" | "pptx" => Some("ppt".to_string()),
+                        _ => None,
+                    };
+
+                    if file_type.is_some() {
+                        entries.push(FileNode {
+                            key,
+                            title,
+                            is_leaf: true,
+                            children: None,
+                            file_type,
+                        });
+                    }
                 }
-                "pdf" => {
-                    file_type = Some("pdf".to_string());
-                }
-                "doc" | "docx" => {
-                    file_type = Some("doc".to_string());
-                }
-                "ppt" | "pptx" => {
-                    file_type = Some("ppt".to_string());
-                }
-                _ => continue, // Skip unsupported files
             }
         }
-
-        let is_leaf = path.is_file();
-        let title = path.file_name().unwrap_or_default().to_string_lossy().to_string();
-        let key = path.to_string_lossy().to_string();
-
-        entries.push(FileNode {
-            key,
-            title,
-            is_leaf,
-            children: if is_leaf { None } else { Some(vec![]) },
-            file_type,
+        // Sort directories first, then files, all alphabetically
+        entries.sort_by(|a, b| {
+            if a.is_leaf != b.is_leaf {
+                a.is_leaf.cmp(&b.is_leaf)
+            } else {
+                a.title.cmp(&b.title)
+            }
         });
+        Ok(entries)
     }
-    Ok(entries)
+
+    build_tree(Path::new(&path))
 }
 
 #[tauri::command]
@@ -156,9 +170,6 @@ pub async fn move_file(state: State<'_, AppState>, old_path: String, new_parent_
 
 #[tauri::command]
 pub async fn save_file_content(state: State<'_, AppState>, path: String, content: String) -> Result<()> {
-    // Log Point 1: Check content received from frontend
-    log::info!("[DEBUG_WIKILINK] Rust save_file_content received content (first 50 chars): '{}...'", content.chars().take(50).collect::<String>());
-
     fs::write(&path, &content).map_err(|e| AppError::Io(e.to_string()))?;
 
     let state_clone = state.inner().clone();
@@ -192,9 +203,6 @@ pub async fn save_file_content(state: State<'_, AppState>, path: String, content
             title,
         };
         
-        // Log Point 2: Check content being sent to FastAPI
-        log::info!("[DEBUG_WIKILINK] Rust sending to FastAPI, content (first 50 chars): '{:?}'", note_payload.content.chars().take(50).collect::<String>());
-
         let payload = serde_json::json!({ "note": note_payload });
 
         match state_clone.http_client.post(url).json(&payload).timeout(Duration::from_secs(120)).send().await {
@@ -214,6 +222,34 @@ pub async fn save_file_content(state: State<'_, AppState>, path: String, content
     });
 
     Ok(())
+}
+
+#[tauri::command]
+pub async fn save_note_to_kb(state: State<'_, AppState>, dir_path: String, base_filename: String, content: String) -> Result<String> {
+    let dir = Path::new(&dir_path);
+    let stem = Path::new(&base_filename).file_stem().unwrap_or_default().to_string_lossy();
+    let extension = Path::new(&base_filename).extension().unwrap_or_default().to_string_lossy();
+    
+    let mut counter = 0;
+    let mut final_path;
+
+    loop {
+        let new_filename = if counter == 0 {
+            base_filename.clone()
+        } else {
+            format!("{}-{}.{}", stem, counter, extension)
+        };
+        final_path = dir.join(&new_filename);
+        if !final_path.exists() {
+            break;
+        }
+        counter += 1;
+    }
+
+    // Reuse the logic from save_file_content
+    save_file_content(state, final_path.to_string_lossy().to_string(), content).await?;
+
+    Ok(final_path.to_string_lossy().to_string())
 }
 
 #[tauri::command]

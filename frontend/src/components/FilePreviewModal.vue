@@ -8,6 +8,18 @@
             {{ (previewStore.filePath || '').split(/[/\\]/).pop() }}
           </p>
           <div class="flex items-center space-x-2">
+            <n-tooltip v-if="!previewStore.isImage" trigger="hover">
+              <template #trigger>
+                <button 
+                  @click="handleSaveToKb" 
+                  class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700" 
+                  title="Save to Knowledge Base"
+                >
+                  <Save class="w-5 h-5" />
+                </button>
+              </template>
+              <span>Save to Knowledge Base</span>
+            </n-tooltip>
             <n-tooltip v-if="previewStore.isImage" trigger="hover">
               <template #trigger>
                 <button 
@@ -59,15 +71,19 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useFilePreviewStore } from '../stores/filePreview';
+import { useSettingsStore } from '../stores/settings';
+import { useKnowledgeExplorerStore } from '../stores/knowledgeExplorer';
 import { MdPreview } from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
 import VuePdfEmbed from 'vue-pdf-embed';
-import { X, Loader2, ExternalLink, Copy, Link } from 'lucide-vue-next';
-import { openExternalLink, readFileAsBase64 } from '../lib/api';
+import { X, Loader2, ExternalLink, Copy, Link, Save } from 'lucide-vue-next';
+import { openExternalLink, readFileAsBase64, saveNoteToKb } from '../lib/api';
 import { useToasts } from '../composables/useToasts';
 import { NTooltip } from 'naive-ui';
 
 const previewStore = useFilePreviewStore();
+const settingsStore = useSettingsStore();
+const explorerStore = useKnowledgeExplorerStore();
 const { success, error } = useToasts();
 
 const isHttpUrl = computed(() => previewStore.filePath?.startsWith('http'));
@@ -141,6 +157,29 @@ const handleCopyImage = async () => {
   } catch (err) {
     console.error('Failed to copy image:', err);
     error('Failed to copy image.');
+  }
+};
+
+const handleSaveToKb = async () => {
+  const content = previewStore.fileContent;
+  if (!content) {
+    error('No content to save.');
+    return;
+  }
+
+  const saveDir = settingsStore.settings?.knowledgeBase.defaultSaveDirectory;
+  if (!saveDir) {
+    error('No default knowledge base directory set in Settings.');
+    return;
+  }
+
+  const baseFilename = content.substring(0, 16).replace(/[<>:"/\\|?*]/g, '').trim() + '.md';
+
+  const finalPath = await saveNoteToKb(saveDir, baseFilename, content);
+  if (finalPath) {
+    const finalFilename = finalPath.split(/[/\\]/).pop();
+    success(`Report saved to knowledge base as "${finalFilename}"`);
+    explorerStore.loadFileTree();
   }
 };
 </script>

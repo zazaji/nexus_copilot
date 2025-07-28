@@ -1,0 +1,210 @@
+{
+  "common": {
+    "none": "None",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "sidebar": {
+    "nexus": "Nexus",
+    "chats": "Chats",
+    "tools": "Tools",
+    "dashboard": "Dashboard",
+    "knowledgeBase": "Knowledge Base",
+    "toolsLink": "Tools",
+    "clipboard": "Clipboard",
+    "userSettings": "User Settings",
+    "offline": "Offline"
+  },
+  "chat": {
+    "inputPlaceholder": "Ask anything..."
+  },
+  "creation": {
+    "inputPlaceholder": "Describe what you want to create..."
+  },
+  "knowledge": {
+    "title": "Knowledge Base",
+    "explorer": "Explorer",
+    "graph": "Graph",
+    "searchPlaceholder": "Search...",
+    "noResults": "No results found.",
+    "openFolder": "Open Folder in System Explorer",
+    "newNote": "New Note",
+    "deleteFile": "Delete File",
+    "editor": {
+      "emptyTitle": "Select a file",
+      "emptyDesc": "Choose a file from the explorer to view or edit its content.",
+      "preview": "Preview",
+      "edit": "Edit",
+      "save": "Save",
+      "saveSuccess": "Saved '{title}' successfully."
+    },
+    "graphTitle": "Knowledge Graph",
+    "graphDesc": "Visualize the connections between your notes.",
+    "graphEmpty": "No notes or links to display. Start writing and linking notes with [[WikiLinks]] to build your graph."
+  },
+  "settings": {
+    "title": "Settings",
+    "tabs": {
+      "general": "General",
+      "apiKeys": "API & Models",
+      "knowledgeBase": "Knowledge Base",
+      "scriptsAndTools": "Actions & Integrations",
+      "execution": "Execution",
+      "converter": "Converter",
+      "backupRestore": "Backup & Restore",
+      "about": "About"
+    },
+    "general": {
+      "title": "General",
+      "description": "Configure general application settings.",
+      "language": "Language",
+      "theme": "Theme",
+      "themes": {
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+      },
+      "copilotDelay": "Copilot Auto-hide Delay (seconds)",
+      "autostart": "Launch Nexus on system startup",
+      "shortcutsTitle": "Global Shortcuts",
+      "shortcutsDesc": "These shortcuts work even when the app is not focused.",
+      "toggleCopilot": "Toggle Copilot Window",
+      "showMain": "Show Main Window",
+      "shortcutPlaceholder": "Click and press a key combination",
+      "save": "Save General Settings",
+      "saveSuccess": "General settings saved!"
+    },
+    "apiKeys": {
+      "title": "API & Models",
+      "description": "Manage API providers and assign models to different tasks.",
+      "modelAssignmentsTitle": "Default Model Assignments",
+      "assignments": "Model Assignments",
+      "assignments_chat": "Default Chat",
+      "assignments_suggestion": "Suggestion",
+      "assignments_embedding": "Embedding",
+      "assignments_vision": "Vision",
+      "assignments_imageGen": "Image Gen",
+      "assignments_videoGen": "Video Gen",
+      "assignments_tts": "TTS",
+      "assignments_plan": "Plan Task",
+      "assignments_debatePro": "Debate (Pro)",
+      "assignments_debateCon": "Debate (Con)",
+      "assignments_debateJudge": "Debate (Judge)",
+      "assignments_write": "Write Task",
+      "assignments_refine": "Refine Task",
+      "externalServices": "External Services API Keys",
+      "tavilyKey": "Tavily Search API Key",
+      "save": "Save Settings",
+      "saveSuccess": "API settings saved successfully.",
+      "providers": "API Providers",
+      "addProvider": "Add Provider",
+      "noProviders": "No API providers configured. Add one to get started."
+    },
+    "knowledge": {
+      "title": "Knowledge Base",
+      "description": "Manage directories that Nexus will index and learn from.",
+      "addFolder": "Add Folder",
+      "clearAll": "Clear & Rebuild All",
+      "noFolders": "No folders have been added to the knowledge base yet.",
+      "rebuildIndex": "Rebuild Index",
+      "removeDirectory": "Remove Directory",
+      "save": "Save & Re-index",
+      "saveSuccess": "Knowledge base settings saved."
+    },
+    "scripts": {
+      "title": "Actions & Integrations",
+      "description": "Configure custom actions, scripts, and integrations with external services.",
+      "scriptDirs": "Script Directories",
+      "scriptDirsDesc": "Nexus will discover executable scripts in these folders to use as tools.",
+      "addFolder": "Add Folder",
+      "noFolders": "No script directories configured.",
+      "save": "Save Directories",
+      "saveSuccess": "Script directories updated."
+    },
+    "execution": {
+      "title": "Execution Environment",
+      "description": "Configure how and where Nexus executes code and runs its backend.",
+      "pythonConfig": "Code Execution",
+      "pythonPath": "Python Interpreter Path",
+      "pythonPathDesc": "Leave blank to use 'python' from your system's PATH.",
+      "workingDir": "Working Directory",
+      "workingDirDesc": "The default directory where scripts will be executed.",
+      "backendManagement": "Backend Service Management",
+      "backendUrl": "Backend URL",
+      "status": "Status:",
+      "installBackend": "Install Backend",
+      "startBackend": "Start Backend",
+      "stopBackend": "Stop Backend",
+      "autoStart": "Start backend automatically on app launch",
+      "save": "Save Execution Settings",
+      "saveSuccess": "Execution settings saved."
+    },
+    "backup": {
+      "title": "Backup & Restore",
+      "description": "Export all your data for backup, or import data to restore.",
+      "exportTitle": "Export Data",
+      "exportDesc": "This will create a single JSON file containing all your conversations, settings, and knowledge base index.",
+      "exportBtn": "Export All Data",
+      "exportSuccess": "Data exported successfully!",
+      "exportError": "Failed to export data.",
+      "restoreTitle": "Restore from Backup",
+      "restoreDesc": "This will overwrite all current data in the application with the data from the backup file. This action cannot be undone.",
+      "restoreBtn": "Restore from File",
+      "restoreSuccess": "Data restored successfully! Please restart the application.",
+      "restoreError": "Failed to restore data.",
+      "confirmRestore": "Are you sure you want to restore from this backup? All current data will be permanently overwritten."
+    },
+    "integrations": {
+      "title": "Integrations",
+      "description": "Connect Nexus to external services and applications.",
+      "configured": "Configured Integrations",
+      "add": "Add Integration",
+      "noIntegrations": "No integrations have been configured yet."
+    }
+  },
+  "tools": {
+    "title": "Tools",
+    "loading": "Loading tools...",
+    "notFound": "No tools found matching your search.",
+    "run": "Run",
+    "output": "Output",
+    "dynamic": "Dynamic",
+    "configured": "Configured",
+    "saveSuccess": "Tool '{name}' saved successfully.",
+    "deleteSuccess": "Tool deleted successfully."
+  },
+  "clipboard": {
+    "title": "Clipboard History",
+    "deletePage": "Delete This Page",
+    "clearAll": "Clear All (Unpinned)",
+    "empty": "Clipboard History is Empty",
+    "emptyDesc": "Content you copy will appear here.",
+    "page": "Page {currentPage} of {totalPages}",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "stats": {
+      "notes": "Notes",
+      "vectors": "Vectors",
+      "conversations": "Conversations",
+      "tools": "Tools"
+    },
+    "storage": {
+      "database": "App Database Size",
+      "vector": "Vector Store Size",
+      "statusNormal": "Normal",
+      "statusWarning": "High",
+      "statusCritical": "Critical",
+      "warningText": "Usage is high. Consider cleaning up.",
+      "criticalText": "Usage is critical. Please clean up data.",
+      "actionLink": "Manage Data"
+    }
+  },
+  "copilot": {
+    "suggestions": "Suggestions",
+    "result": "Result",
+    "executeWith": "Execute with..."
+  }
+}

@@ -180,6 +180,12 @@ export interface ModelAssignments {
   embedding: ModelEndpoint | null;
   tts: ModelEndpoint | null;
   videoGen: ModelEndpoint | null;
+  plan: ModelEndpoint | null;
+  debatePro: ModelEndpoint | null;
+  debateCon: ModelEndpoint | null;
+  debateJudge: ModelEndpoint | null;
+  write: ModelEndpoint | null;
+  refine: ModelEndpoint | null;
 }
 
 export interface OtherApiKeys {

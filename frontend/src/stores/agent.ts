@@ -202,11 +202,11 @@ export const useAgentStore = defineStore('agent', () => {
         startPollingForTask(taskId);
     };
 
-    const refineSection = async (taskId: string, nodeId: string, prompt: string, model: string) => {
+    const refineSection = async (taskId: string, nodeId: string, prompt: string, model: string, isManual: boolean) => {
         const { info } = useToasts();
-        info(`Refining section ${nodeId}...`);
+        info(isManual ? `Manually replacing content for section ${nodeId}...` : `Refining section ${nodeId}...`);
         refiningNodeIds.value.add(nodeId);
-        await refineAgentTaskSection(taskId, nodeId, prompt, model);
+        await refineAgentTaskSection(taskId, nodeId, prompt, model, isManual);
         stopPollingForTask(taskId);
         startPollingForTask(taskId);
     };

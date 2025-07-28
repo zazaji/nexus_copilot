@@ -147,7 +147,7 @@ pub async fn generate_research_node_content(state: State<'_, AppState>, task_id:
 }
 
 #[tauri::command]
-pub async fn refine_agent_task_section(state: State<'_, AppState>, task_id: String, node_id: String, prompt: String, model: String) -> Result<()> {
+pub async fn refine_agent_task_section(state: State<'_, AppState>, task_id: String, node_id: String, prompt: String, model: String, is_manual: bool) -> Result<()> {
     let settings = queries::get_settings(&state.db.lock().unwrap())?;
     let backend_url = &settings.execution.backend_url;
     let url = format!("{}/api/v1/agent/refine-section", backend_url);
@@ -157,6 +157,7 @@ pub async fn refine_agent_task_section(state: State<'_, AppState>, task_id: Stri
         "node_id": node_id,
         "prompt": prompt,
         "model": model,
+        "is_manual": is_manual,
     });
 
     state.http_client

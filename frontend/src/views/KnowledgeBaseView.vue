@@ -21,6 +21,9 @@
             {{ $t(tab.label) }}
           </button>
         </div>
+        <button @click="refreshTree" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700" title="Refresh File Tree">
+          <RefreshCw class="w-5 h-5" :class="{ 'animate-spin': explorerStore.isLoadingTree }" />
+        </button>
         <button @click="rebuildGraph" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700" title="Rebuild Knowledge Graph">
           <RefreshCw class="w-5 h-5" :class="{ 'animate-spin': isRebuilding }" />
         </button>
@@ -71,6 +74,10 @@ const tabs = [
   { name: 'Explorer', label: 'knowledge.explorer' },
   { name: 'Graph', label: 'knowledge.graph' },
 ];
+
+const refreshTree = () => {
+  explorerStore.loadFileTree();
+};
 
 const rebuildGraph = async () => {
   isRebuilding.value = true;

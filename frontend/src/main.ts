@@ -11,7 +11,7 @@ import { useClipboardStore } from './stores/clipboard';
 import { setupI18n } from './i18n';
 import type { I18n } from 'vue-i18n';
 
-export let i18n: I18n;
+export let i18n: I18n<any, any, any, any, false>;
 
 // --- Pre-Vue Initialization ---
 async function initialize() {

@@ -193,6 +193,7 @@ fn main() {
             commands::knowledge_base::rename_file,
             commands::knowledge_base::move_file,
             commands::knowledge_base::save_file_content,
+            commands::knowledge_base::save_note_to_kb,
             commands::knowledge_base::read_file_content,
             commands::knowledge_base::list_files_in_directory,
             commands::knowledge_base::start_indexing,

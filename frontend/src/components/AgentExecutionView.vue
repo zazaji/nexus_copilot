@@ -113,8 +113,8 @@ const handleRefineNode = (payload: { nodeId: string, nodeTitle: string }) => {
   isRefineModalVisible.value = true;
 };
 
-const submitRefinement = (payload: { prompt: string, model: string }) => {
-  agentStore.refineSection(props.task.id, refiningNodeId.value, payload.prompt, payload.model);
+const submitRefinement = (payload: { prompt: string, model: string, isManual: boolean }) => {
+  agentStore.refineSection(props.task.id, refiningNodeId.value, payload.prompt, payload.model, payload.isManual);
 };
 
 // --- Common Logic ---

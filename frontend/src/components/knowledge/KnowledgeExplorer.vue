@@ -4,6 +4,18 @@
     <header class="p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0 space-y-3">
       <div class="flex justify-between items-center">
         <h2 class="font-semibold text-lg">{{ $t('knowledge.explorerTitle') }}</h2>
+        <n-tooltip trigger="hover">
+          <template #trigger>
+            <button 
+              @click="refreshTree" 
+              :disabled="explorerStore.isLoadingTree"
+              class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <RefreshCw class="w-4 h-4" :class="{ 'animate-spin': explorerStore.isLoadingTree }" />
+            </button>
+          </template>
+          Refresh File Tree
+        </n-tooltip>
       </div>
       <div class="space-y-2">
         <n-select
@@ -50,47 +62,22 @@
           <Loader2 class="w-6 h-6 animate-spin mx-auto mt-10" />
         </div>
         <div v-else>
-          <div v-for="rootNode in explorerStore.fileTree" :key="rootNode.key" class="group/folder">
-            <div 
-              @click="toggleFolder(rootNode.key)"
-              class="px-2 py-1 font-semibold text-sm flex items-center justify-between space-x-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-            >
-              <div class="flex items-center space-x-2 flex-1 min-w-0" @dblclick.stop="startEditing(rootNode)">
-                <component :is="collapsedFolders.has(rootNode.key) ? ChevronRight : ChevronDown" class="w-4 h-4 flex-shrink-0" />
-                <Folder class="w-4 h-4 text-yellow-500" />
-                <input v-if="editingNodeKey === rootNode.key" type="text" v-model="editingName" @blur="finishEditing" @keydown.enter.prevent="finishEditing" @keydown.esc="cancelEditing" class="bg-transparent focus:outline-none focus:ring-1 focus:ring-blue-500 rounded px-1 text-sm font-semibold" ref="editInputRef" />
-                <span v-else class="truncate">{{ rootNode.title }}</span>
-              </div>
-              <div class="flex items-center opacity-0 group-hover/folder:opacity-100 transition-opacity">
-                <button @click.stop="openFolderInExplorer(rootNode.key)" class="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600" :title="$t('knowledge.openFolder')">
-                  <FolderOpen class="w-4 h-4" />
-                </button>
-                <button @click.stop="explorerStore.createFile(rootNode)" class="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600" :title="$t('knowledge.newNote')">
-                  <FilePlus2 class="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-            <div v-if="!collapsedFolders.has(rootNode.key)" class="pl-4">
-              <div 
-                v-for="childNode in rootNode.children" 
-                :key="childNode.key"
-                @click="handleFileClick(childNode, childNode.fileType)"
-                @contextmenu.prevent="handleContextMenu($event, childNode)"
-                class="group/file flex items-center justify-between space-x-2 px-2 py-1.5 rounded-md cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                :class="{ 'bg-blue-50 dark:bg-blue-900/50': explorerStore.activeFile?.key === childNode.key }"
-              >
-                <div class="flex items-center space-x-2 truncate flex-1 min-w-0" @dblclick.stop="startEditing(childNode)">
-                  <component :is="getFileIcon(childNode.fileType)" class="w-4 h-4 text-gray-500 ml-4" />
-                  <input v-if="editingNodeKey === childNode.key" type="text" v-model="editingName" @blur="finishEditing" @keydown.enter.prevent="finishEditing" @keydown.esc="cancelEditing" class="bg-transparent focus:outline-none focus:ring-1 focus:ring-blue-500 rounded px-1 text-sm" ref="editInputRef" />
-                  <span v-else class="text-sm truncate">{{ childNode.title }}</span>
-                </div>
-                <div class="flex items-center opacity-0 group-hover/file:opacity-100 transition-opacity">
-                    <button @click.stop="handleDeleteFile(childNode)" class="p-1 rounded-md text-gray-400 hover:bg-red-100 hover:text-red-500 dark:hover:bg-red-900/50" :title="$t('knowledge.deleteFile')">
-                        <Trash2 class="w-4 h-4" />
-                    </button>
-                </div>
-              </div>
-            </div>
+          <div v-for="rootNode in explorerStore.fileTree" :key="rootNode.key">
+            <FileTreeNode
+              :node="rootNode"
+              :level="0"
+              :active-file-key="explorerStore.activeFile?.key"
+              :expanded-keys="expandedKeys"
+              :editing-key="editingNodeKey"
+              @select-file="handleFileClick"
+              @toggle-expand="toggleFolder"
+              @context-menu="handleContextMenu"
+              @create-file="explorerStore.createFile"
+              @delete-file="handleDeleteFile"
+              @start-rename="startEditing"
+              @finish-rename="finishEditing"
+              @open-in-explorer="openFolderInExplorer"
+            />
           </div>
         </div>
       </div>
@@ -109,15 +96,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, computed, watch, onMounted } from 'vue';
+import { ref, nextTick, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useKnowledgeExplorerStore } from '../../stores/knowledgeExplorer';
 import { useKnowledgeBaseStore } from '../../stores/knowledgeBase';
-import { FilePlus2, Folder, FileText, Loader2, Search, Trash2, ChevronDown, ChevronRight, FolderOpen, FileSignature, Presentation } from 'lucide-vue-next';
+import { Loader2, Search, RefreshCw } from 'lucide-vue-next';
 import KnowledgeSourceItem from '../KnowledgeSourceItem.vue';
 import KnowledgeSourceItemSkeleton from '../KnowledgeSourceItemSkeleton.vue';
+import FileTreeNode from './FileTreeNode.vue';
 import type { FileNode, KnowledgeSource } from '../../types';
-import { NDropdown, NSelect } from 'naive-ui';
+import { NDropdown, NSelect, NTooltip } from 'naive-ui';
 import { dirname } from '@tauri-apps/api/path';
 import { showInFolder } from '../../lib/api';
 
@@ -125,10 +113,7 @@ const { t } = useI18n();
 const explorerStore = useKnowledgeExplorerStore();
 const kbStore = useKnowledgeBaseStore();
 const editingNodeKey = ref<string | null>(null);
-const editingName = ref('');
-const originalName = ref('');
-const editInputRef = ref<HTMLInputElement | null>(null);
-const collapsedFolders = ref(new Set<string>());
+const expandedKeys = ref(new Set<string>());
 
 onMounted(() => {
     kbStore.fetchOnlineKbs();
@@ -142,34 +127,20 @@ const searchSourceOptions = computed(() => {
     return options;
 });
 
-watch(() => explorerStore.fileTree, (newTree) => {
-  if (newTree && newTree.length > 0) {
-    newTree.forEach(rootNode => {
-      collapsedFolders.value.add(rootNode.key);
-    });
-  }
-}, { immediate: true, deep: true });
-
 const showDropdown = ref(false);
 const x = ref(0);
 const y = ref(0);
 const selectedNodeKey = ref<string | null>(null);
 
-const getFileIcon = (fileType?: string) => {
-    switch(fileType) {
-        case 'pdf': return FileText;
-        case 'doc': return FileSignature;
-        case 'ppt': return Presentation;
-        default: return FileText;
-    }
+const refreshTree = () => {
+  explorerStore.loadFileTree();
 };
 
-const handleFileClick = (fileOrNode: FileNode | string, fileType?: string) => {
-    const path = typeof fileOrNode === 'string' ? fileOrNode : fileOrNode.key;
-    if (fileType === 'text') {
-        explorerStore.selectFile(fileOrNode);
-    } else {
-            showInFolder(path);
+const handleFileClick = (fileNode: FileNode) => {
+    if (fileNode.fileType === 'text') {
+        explorerStore.selectFile(fileNode);
+    } else if (fileNode.key) {
+        showInFolder(fileNode.key);
     }
 };
 
@@ -191,10 +162,10 @@ const isResultActive = (item: KnowledgeSource) => {
 };
 
 const toggleFolder = (key: string) => {
-  if (collapsedFolders.value.has(key)) {
-    collapsedFolders.value.delete(key);
+  if (expandedKeys.value.has(key)) {
+    expandedKeys.value.delete(key);
   } else {
-    collapsedFolders.value.add(key);
+    expandedKeys.value.add(key);
   }
 };
 
@@ -218,14 +189,14 @@ const dropdownOptions = computed(() => {
   return moveOptions;
 });
 
-const handleContextMenu = (e: MouseEvent, node: FileNode) => {
-  e.preventDefault();
+const handleContextMenu = (payload: { event: MouseEvent, node: FileNode }) => {
+  payload.event.preventDefault();
   showDropdown.value = false;
-  selectedNodeKey.value = node.key;
+  selectedNodeKey.value = payload.node.key;
   nextTick().then(() => {
     showDropdown.value = true;
-    x.value = e.clientX;
-    y.value = e.clientY;
+    x.value = payload.event.clientX;
+    y.value = payload.event.clientY;
   });
 };
 
@@ -240,7 +211,7 @@ const handleDropdownSelect = (key: string) => {
 };
 
 const handleDeleteFile = (node: FileNode) => {
-        explorerStore.deleteFile(node.key);
+    explorerStore.deleteFile(node.key);
 };
 
 const triggerSearch = () => {
@@ -249,23 +220,12 @@ const triggerSearch = () => {
 
 const startEditing = (node: FileNode) => {
   editingNodeKey.value = node.key;
-  editingName.value = node.title;
-  originalName.value = node.title;
-  nextTick(() => {
-    editInputRef.value?.focus();
-  });
 };
 
-const finishEditing = () => {
-  if (editingNodeKey.value && editingName.value && editingName.value !== originalName.value) {
-    explorerStore.renameFile(editingNodeKey.value, editingName.value);
+const finishEditing = (payload: { oldKey: string, newName: string }) => {
+  if (payload.newName && payload.newName !== payload.oldKey.split(/[/\\]/).pop()) {
+    explorerStore.renameFile(payload.oldKey, payload.newName);
   }
-  cancelEditing();
-};
-
-const cancelEditing = () => {
   editingNodeKey.value = null;
-  editingName.value = '';
-  originalName.value = '';
 };
 </script>

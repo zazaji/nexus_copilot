@@ -95,6 +95,7 @@ export const readFileAsBase64 = (path: string) => invokeWithFeedback<string>('re
 // --- File System & KB ---
 export const readFileContent = (path: string) => invokeWithFeedback<string>('read_file_content', { path });
 export const saveFileContent = (path: string, content: string) => invokeWithFeedback<void>('save_file_content', { path, content });
+export const saveNoteToKb = (dirPath: string, baseFilename: string, content: string) => invokeWithFeedback<string>('save_note_to_kb', { dirPath, baseFilename, content });
 export const listFilesInDirectory = (path: string) => invokeWithFeedback<FileNode[]>('list_files_in_directory', { path });
 export const createUniqueFile = (dirPath: string) => invokeWithFeedback<string>('create_unique_file', { dirPath });
 export const renameFile = (oldPath: string, newPath: string) => invokeWithFeedback<void>('rename_file', { oldPath, newPath });
@@ -142,7 +143,7 @@ export const linkAgentTaskToMessage = (messageId: string, agentTaskId: string) =
 export const saveMessage = (message: ChatMessage) => invokeWithFeedback<void>('save_message', { message });
 export const generateArtifact = (conversationId: string, creationType: CreationType, prompt: string, modelName: string, params: Record<string, any>, provider: ApiProvider) => invokeWithFeedback<CreationArtifact>('generate_artifact', { conversationId, creationType, prompt, modelName, params, provider });
 export const generateResearchNodeContent = (taskId: string, nodeId: string) => invokeWithFeedback<void>('generate_research_node_content', { taskId, nodeId });
-export const refineAgentTaskSection = (taskId: string, nodeId: string, prompt: string, model: string) => invokeWithFeedback<void>('refine_agent_task_section', { taskId, nodeId, prompt, model });
+export const refineAgentTaskSection = (taskId: string, nodeId: string, prompt: string, model: string, isManual: boolean) => invokeWithFeedback<void>('refine_agent_task_section', { taskId, nodeId, prompt, model, isManual });
 
 // --- System ---
 export const getActiveWindowInfo = () => invokeWithFeedback<{ appName: string; windowTitle: string } | null>('get_active_window_info');

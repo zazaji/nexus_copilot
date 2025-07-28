@@ -67,7 +67,6 @@
               :step-node="step"
               :task-steps="task.steps"
               :task-content="task.researchContent"
-              :prefix="`${index + 1}`"
               @refine="$emit('refine-node', $event)"
             />
           </div>

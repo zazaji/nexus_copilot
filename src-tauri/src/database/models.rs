@@ -35,16 +35,21 @@ pub struct ModelEndpoint {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
+#[serde(rename_all = "camelCase")]
 pub struct ModelAssignments {
     pub chat: Option<ModelEndpoint>,
     pub suggestion: Option<ModelEndpoint>,
     pub vision: Option<ModelEndpoint>,
-    #[serde(rename = "imageGen")]
     pub image_gen: Option<ModelEndpoint>,
     pub embedding: Option<ModelEndpoint>,
     pub tts: Option<ModelEndpoint>,
-    #[serde(rename = "videoGen")]
     pub video_gen: Option<ModelEndpoint>,
+    pub plan: Option<ModelEndpoint>,
+    pub debate_pro: Option<ModelEndpoint>,
+    pub debate_con: Option<ModelEndpoint>,
+    pub debate_judge: Option<ModelEndpoint>,
+    pub write: Option<ModelEndpoint>,
+    pub refine: Option<ModelEndpoint>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
