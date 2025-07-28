@@ -1,0 +1,94 @@
+{
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
+    "devPath": "http://localhost:1631",
+    "distDir": "../dist",
+    "withGlobalTauri": true
+  },
+  "package": {
+    "productName": "nexus",
+    "version": "0.3.11"
+  },
+  "tauri": {
+    "macOSPrivateApi": true,
+    "allowlist": {
+      "all": false,
+      "shell": {
+        "all": false,
+        "open": true
+      },
+      "window": {
+        "all": true
+      },
+      "globalShortcut": {
+        "all": true
+      },
+      "dialog": {
+        "all": true
+      },
+      "path": {
+        "all": true
+      },
+      "fs": {
+        "all": true,
+        "scope": [
+          "$APP/*",
+          "$APPDATA/*",
+          "$RESOURCE/*"
+        ]
+      },
+      "http": {
+        "all": true,
+        "scope": [
+          "http://*",
+          "https://*"
+        ]
+      }
+    },
+    "bundle": {
+      "active": true,
+      "targets": "all",
+      "identifier": "com.nexus.dev",
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ]
+    },
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "fullscreen": false,
+        "resizable": true,
+        "title": "Nexus",
+        "width": 1200,
+        "height": 800,
+        "label": "main",
+        "visible": true,
+        "decorations": true,
+        "skipTaskbar": false
+      },
+      {
+        "width": 800,
+        "height": 1280,
+        "decorations": false,
+        "url": "/copilot",
+        "label": "copilot",
+        "visible": false,
+        "transparent": true,
+        "resizable": true,
+        "skipTaskbar": true,
+        "alwaysOnTop": true
+      }
+    ],
+    "systemTray": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true
+    }
+  }
+}

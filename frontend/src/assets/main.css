@@ -1,0 +1,69 @@
+/* frontend/src/assets/main.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.7);
+}
+
+/* md-editor-v3 overrides for transparent theme and full height */
+.md-editor {
+  @apply h-full bg-transparent;
+}
+
+/* Dark theme styles using global .dark class on <html> */
+html.dark .md-editor {
+  --md-color: theme('colors.gray.300');
+  --md-hover-color: theme('colors.gray.100');
+  --md-bk-color: transparent !important;
+  --md-bk-color-outstand: theme('colors.gray.800');
+  --md-bk-hover-color: theme('colors.gray.700');
+  --md-border-color: theme('colors.gray.700');
+  --md-border-hover-color: theme('colors.gray.600');
+  --md-border-active-color: theme('colors.gray.500');
+  --md-modal-mask-bg: rgba(0, 0, 0, 0.5);
+  --md-modal-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Light theme styles using global :not(.dark) class on <html> */
+html:not(.dark) .md-editor {
+  --md-color: theme('colors.gray.800');
+  --md-hover-color: theme('colors.black');
+  --md-bk-color: transparent !important;
+  --md-bk-color-outstand: theme('colors.gray.100');
+  --md-bk-hover-color: theme('colors.gray.200');
+  --md-border-color: theme('colors.gray.300');
+  --md-border-hover-color: theme('colors.gray.400');
+  --md-border-active-color: theme('colors.gray.500');
+}
+
+/* Ensure inner editor components take full height */
+.md-editor-content {
+  @apply h-full;
+}
+
+.md-editor-input-wrapper {
+  @apply h-full;
+}
+
+.cm-editor {
+  @apply h-full;
+}

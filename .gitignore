@@ -1,0 +1,85 @@
+node_modules
+# .gitignore for the Nexus Copilot project
+# This file specifies intentionally untracked files to ignore.
+
+# General
+# ----------------------------------------------------------------
+# OS-generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+package-lock.json
+# Log files
+*.log
+logs
+*.log.*
+
+# Environment variables - IMPORTANT for security
+.env
+.env.*
+!.env.example
+
+# IDE and editor configuration
+.idea/
+.vscode/
+*.suo
+*.user
+src-tauri/Cargo.lock
+
+# Dependencies
+# ----------------------------------------------------------------
+# Node.js dependencies
+/node_modules/
+
+# Rust dependencies and build artifacts
+/src-tauri/target/
+# Cargo.lock should typically be committed to ensure reproducible builds.
+# Uncomment the line below if your team's policy is to ignore it.
+/src-tauri/Cargo.lock
+
+# Build Artifacts
+# ----------------------------------------------------------------
+# Frontend build output
+/dist/
+/temp/
+/backend
+
+# Python Specific
+# ----------------------------------------------------------------
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python virtual environments
+.venv/
+venv/
+*.venv/
+
+# Python packaging artifacts
+*.egg-info/
+dist-python/
+build/
+
+# Specific File Types to Ignore (as per your request)
+# ----------------------------------------------------------------
+# Compressed archives
+*.zip
+
+# Office documents and other text files
+*.docx
+*.xlsx
+*.txt
+# Ignore all Markdown files...
+*.md
+# ...but explicitly re-include the main readme.md file.
+# The '!' negates the previous rule for this specific file.
+!readme.md
+yarn.lock
+.gitignore.gitignore
+.commit_count
+.cargo

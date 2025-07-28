@@ -1,0 +1,19 @@
+<!-- frontend/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nexus</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- 
+      CORRECTED PATH:
+      Since the vite 'root' is now 'frontend', the path to main.ts is simply '/src/main.ts'.
+      The leading slash makes it an absolute path from the server root (which is now the 'frontend' dir).
+    -->
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
